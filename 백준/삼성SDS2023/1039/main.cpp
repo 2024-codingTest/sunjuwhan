@@ -4,73 +4,80 @@
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
-vector<int> vct;
-vector<int> find_vct;
-
-int N,M;
+int dp[1000001][11];
+string str;
+int k;
 
 void input()
 {
-    cin>>N;
-    for(int i=0;i<N;i++)
-    {
-        int number;
-        cin>>number;
-        vct.push_back(number);
-    }
-    cin>>M;
-    for(int i=0;i<M;i++)
-    {
-        int number;
-        cin>>number;
-        find_vct.push_back(number);
-    }
+   cin>>str;
+   cin>>k;
+
+   for(int i=0;i<=1000000;i++)
+   {
+       for(int t=0;t<=10;t++)
+       {
+           dp[i][t]=-1;
+       }
+   }
+
 }
-void binary_search()
+
+int dfs(int depth,string number)
 {
-    for(int i=0;i<find_vct.size();i++)
+
+    if(depth==k)
     {
-        int left=0;
-        int right=N-1;
-        int find_number=find_vct[i];
-        bool flag=0;
-        while(left<=right)
+        return stoi(number);
+    }
+
+    if(dp[stoi(number)][depth]!=-1)
+    {
+        return dp[stoi(number)][depth];
+    }
+
+    int now_number=stoi(number);
+
+    for(int i=0;i<number.size();i++)
+    {
+
+        for(int t=i+1;t<number.size();t++)
         {
-            int mid=(left+right)/2;
-            if(vct[mid]==find_number)
+
+            if(i==0&&number[t]=='0')
             {
-                cout<<"1"<<"\n";
-                flag=1;
-                break;
+                continue;
             }
-            else if(vct[mid]<find_number)
-            {
-                left=mid+1;
-            }
-            else
-            {
-                right=mid-1;
-            }
-        }
-        if(flag!=1)
-        {
-            cout<<"0" <<"\n";
+
+            char temp=number[i];
+            number[i]=number[t];
+            number[t]=temp;
+            dp[now_number][depth]=max(dp[now_number][depth],dfs(depth+1,number));
+            temp=number[i];
+            number[i]=number[t];
+            number[t]=temp;
         }
     }
+
+    return dp[now_number][depth];
+
 }
 void solution()
 {
+
     input();
-    sort(vct.begin(),vct.end());
-    binary_search();
+    cout<<dfs(0,str)<<endl;
+
 }
 int main(void)
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-    solution();
+
+   ios::sync_with_stdio(false) ;
+   cin.tie(NULL);
+   cout.tie(NULL);
+   solution();
+
 }
