@@ -41,5 +41,6 @@ void solution()
 }
 int main(void)
 {
+
     solution();
 }
